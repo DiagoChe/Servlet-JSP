@@ -1,0 +1,67 @@
+编写的第一个Servlet程序：
+
+import java.io.IOException;
+--->import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/HelloWorld")
+public class HelloWorld extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().append("Hello 天码营!");
+    }
+}
+这段程序体现了Servlet的几个要素：
+
+在程序实现的角度，一个Servlet是继承了javax.servlet.http.HttpServlet的子类
+doGet()方法中定义了处理HTTP GET请求的动作，在例子中是将"Hello 天码营!"作为响应内容返回
+HttpServletRequest对象中封装了HTTP请求信息，通过该对象可以访问HTTP请求数据（Header，表单，URL等等）
+HttpServletResponse可以用来生成HTTP响应内容，这里仅仅是设置了返回内容的编码，并写入了一个字符串
+@WebServlet("/HelloWorld")注解表明只有请求的路径是/HelloWorld（例如http://localhost:8080/HelloWorld）时，才会执行该Servlet生成返回内容
+
+--->Servlet容器是Web服务器和Servlet进行通讯的主要构件，它的主要职责包括：
+
+管理Servlet程序的生命周期
+将URL映射到指定的Servlet进行处理
+与Servlet程序合作处理HTTP请求——根据HTTP请求生成HttpServletResponse对象并传递给Servlet进行处理，将Servlet中的HttpServletResponse对象生成的内容返回给浏览器
+并发请求的多线程处理、线程池管理
+Session管理，HTTP缓存等
+
+
+--->通过HttpServletResponse对象返回HTML代码
+
+如果我们希望通过Servlet来实现博客页面，原理是非常简单的——通过HttpServletResponse对象将博客页面的HTML内容返回到浏览器。代码结构可能是这样的：
+
+response.getWriter().append("<html>")
+.append("<body>")
+.append("<h1>第一篇博客文章</h1>")
+.append("<p>这是天码营博客的第一篇文章</p>")
+.append("</body>")
+.append("</html>");
+当然我们的博客页面结构远比上面的代码复杂，可能包含数百行HTML代码，理论上通过Servlet API是可以将他们拼接好并返回到浏览器的。
+
+返回动态内容
+
+上面返回的内容依然是硬编码的内容，本质上和静态的HTML是一样的。而动态化意味着我们可以通过Java动态地获取数据，根据数据来生成最终的返回内容。
+
+如果我们获得了一个Blog对象（假设命名为blog），则可以按照如下方式返回blog信息：
+
+
+Blog blog;
+
+// 1. 通过特定操作获得blog对象
+...
+
+// 2. 生成返回信息
+response.getWriter().append("<html>")
+.append("<body>")
+.append(String.format("<h2>%s</h2>", blog.getTitle())
+.append(String.format("<p>%s</p>", blog.getContent())
+.append("</body>")
+.append("</html>");
+
+
