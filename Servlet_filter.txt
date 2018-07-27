@@ -1,0 +1,18 @@
+--->Servlet过滤器方法:
+Servlet 过滤器方法
+过滤器是一个实现了 javax.servlet.Filter 接口的 Java 类。javax.servlet.Filter 接口定义了三个方法：
+序号	方法 & 描述
+1	public void doFilter (ServletRequest, ServletResponse, FilterChain)
+该方法完成实际的过滤操作，当客户端请求方法与过滤器设置匹配的URL时，Servlet容器将先调用过滤器的doFilter方法。FilterChain用户访问后续过滤器。
+2	public void init(FilterConfig filterConfig)
+web 应用程序启动时，web 服务器将创建Filter 的实例对象，并调用其init方法，读取web.xml配置，完成对象的初始化功能，从而为后续的用户请求作好拦截的准备工作（filter对象只会创建一次，init方法也只会执行一次）。开发人员通过init方法的参数，可获得代表当前filter配置信息的FilterConfig对象。
+3	public void destroy()
+Servlet容器在销毁过滤器实例前调用该方法，在该方法中释放Servlet过滤器占用的资源。
+
+--->在 init 方法使用 FilterConfig 对象获取参数：
+public void  init(FilterConfig config) throws ServletException {
+    // 获取初始化参数
+    String site = config.getInitParameter("Site"); 
+    // 输出初始化参数
+    System.out.println("网站名称: " + site); 
+}
